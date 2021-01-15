@@ -14,21 +14,33 @@ module def
     integer Nstate
 
     real*8,allocatable :: T(:,:),V(:,:) ! kinectic & potential matrix for DVR
-    real*8,allocatable :: psi_real(:,:) ! DVR real wave function
-    complex*16,allocatable :: psi(:,:) ! DVR wave function
+    real*8,allocatable :: eigenwf(:,:) ! DVR eigen function
+    complex*16,allocatable :: psi(:) ! DVR time-dependent wave function
     real*8,allocatable :: E(:)
 
     real*8,allocatable :: pot(:,:) ! multi-state potential matrix
    
 
     complex*16,allocatable :: propagator(:,:) ! DVR wave function
+    real*8 ttot,dt
+    real*8 P0
 
+    real*8,allocatable :: rho(:,:)
+
+    real*8,allocatable :: time(:)
+    integer nstep
 
     real*8 mass
 
 
+    ! parameters for harmonic oscillator
+    real*8 omega_HO,R0_HO
 
-    real*8 omega_HO
+
+
+
+    ! parameters for 2-state dual harmonic oscillators
+    real*8 omega1_dualHO,omega2_dualHO,eps_dualHO,delta_dualHO, q_dualHO
 
 
 
@@ -46,8 +58,8 @@ contains
         allocate(T(Nstate*Ngrid,Nstate*Ngrid))
         allocate(V(Nstate*Ngrid,Nstate*Ngrid))
 
-        allocate(psi(Nstate*Ngrid,Nstate*Ngrid))
-        allocate(psi_real(Nstate*Ngrid,Nstate*Ngrid))
+        allocate(psi(Nstate*Ngrid))
+        allocate(eigenwf(Nstate*Ngrid,Nstate*Ngrid))
         allocate(propagator(Nstate*Ngrid,Nstate*Ngrid))
         allocate(E(Nstate*Ngrid))
 

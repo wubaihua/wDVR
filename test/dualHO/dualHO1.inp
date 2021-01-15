@@ -1,19 +1,27 @@
 potential:
-HO
+dualHO
 parameter:
-omega:
-1
-R0:
-0
+omega1,omega2:
+1 1.2
+eps,delta:
+1 1
+q:
+0.01
 mass:
 1
 iop:
 1
 jop:(1 for eigen-solver, 2 for propagator) 
-1
+2
+dt:
+0.1
+ttot:
+10
+P0:
+0
 grid_start:
--5
+-10
 grid_end:
-5
+10
 dx:
 0.1

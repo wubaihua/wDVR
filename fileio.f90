@@ -5,11 +5,24 @@ subroutine read_input(idinp)
 
     read(idinp,*) 
     read(idinp,*) potential
+    read(idinp,*) 
     select case(trim(adjustl(potential)))
     case("HO")
         Nstate=1
         read(idinp,*) 
         read(idinp,*) omega_HO
+        read(idinp,*) 
+        read(idinp,*) R0_H0
+    case("QP")
+        Nstate=1
+    case("dualHO")
+        Nstate=2
+        read(idinp,*) 
+        read(idinp,*) omega1_dualHO,omega2_dualHO
+        read(idinp,*)
+        read(idinp,*) eps_dualHO,delta_dualHO
+        read(idinp,*) 
+        read(idinp,*) q_dualHO
     end select
     read(idinp,*) 
     read(idinp,*) mass
@@ -17,6 +30,15 @@ subroutine read_input(idinp)
     read(idinp,*) iop
     read(idinp,*) 
     read(idinp,*) jop
+    select case(jop)
+    case(2)
+        read(idinp,*) 
+        read(idinp,*) dt
+        read(idinp,*) 
+        read(idinp,*) ttot
+        read(idinp,*) 
+        read(idinp,*) P0
+    end select
     read(idinp,*) 
     read(idinp,*) grid_start
     read(idinp,*) 
@@ -36,6 +58,7 @@ subroutine output
 
 
     100 format(<Ngrid+1>E18.8E3)
+    101 format(<Nstate+1>E18.8E3)
 
     select case(jop)
     case(1)
@@ -47,11 +70,15 @@ subroutine output
             write(15,*) E(i)
         end do
         do i=1,Ngrid
-            write(16,100) R(i),psi_real(i,:)
+            write(16,100) R(i),eigenwf(i,:)
         end do
 
+    case(2)
+        open(20,file=filepath(1:len(trim(filepath))-4)//"_population.out")
 
-
+        do i=1,nstep
+            write(20,101) time(i),rho(:,i)
+        end do
     end select
 
 

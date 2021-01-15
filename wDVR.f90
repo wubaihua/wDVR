@@ -17,6 +17,8 @@ program wDVR
     select case(jop)
     case(1)
         call eigensolver
+    case(2)
+        call DVRpropagator
     end select
 
     call output
