@@ -44,7 +44,7 @@ subroutine build_dualHO
     V=0
     do i=1,Ngrid
         V(i,i)=0.5*mass*omega1_dualHO**2*(R(i)+q_dualHO)**2+eps_dualHO
-        V(i+Ngrid,i+Ngrid)=0.5*mass*omega2_dual**2*R(i)**2-eps_dualHO
+        V(i+Ngrid,i+Ngrid)=0.5*mass*omega2_dualHO**2*R(i)**2-eps_dualHO
         V(i,i+Ngrid)=delta_dualHO
         V(i+Ngrid,i)=delta_dualHO
     end do

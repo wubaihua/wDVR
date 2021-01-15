@@ -12,7 +12,7 @@ subroutine read_input(idinp)
         read(idinp,*) 
         read(idinp,*) omega_HO
         read(idinp,*) 
-        read(idinp,*) R0_H0
+        read(idinp,*) R0_HO
     case("QP")
         Nstate=1
     case("dualHO")

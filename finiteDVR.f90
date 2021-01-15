@@ -6,10 +6,10 @@ subroutine bulid_kit
     T=0
     do istate=0,Nstate-1
         do i=1,Ngrid
-            T(i+istate,i+istate)=-2
+            T(i+istate*Ngrid,i+istate*Ngrid)=-2
             if(i>1)then
-                T(i+istate,i-1+istate)=1
-                T(i-1+istate,i+istate)=1 
+                T(i+istate*Ngrid,i-1+istate*Ngrid)=1
+                T(i-1+istate*Ngrid,i+istate*Ngrid)=1 
             end if 
         end do
     end do
@@ -83,19 +83,25 @@ subroutine DVRpropagator
     use constant
     implicit real*8(a-h,o-z)
     real*8,allocatable :: LDA(:,:)
+    complex*16,allocatable :: elda(:,:)
 
 
 
     call eigensolver
-    allocate(LDA(Ngrid*Nstate,Ngrid*Nstate))
-    LDA=0
+    ! allocate(LDA(Ngrid*Nstate,Ngrid*Nstate))
+    allocate(eLDA(Ngrid*Nstate,Ngrid*Nstate))
+    ! LDA=0
+    elda=(0.0_8,0.0_8)
     do i=1,Ngrid*Nstate 
-        LDA(i,i)=E(i)
+        ! LDA(i,i)=E(i)
+        elda(i,i)=exp(-im*E(i)*dt)
     end do
 
-    propagator=matmul(eigenwf,matmul(exp(-im*LDA*dt),transpose(eigenwf)))
+    
 
-    deallocate(LDA)
+    propagator=matmul(eigenwf,matmul(eLDA,transpose(eigenwf)))
+
+    deallocate(eLDA)
 
     call initial_wf
 
@@ -112,7 +118,7 @@ subroutine DVRpropagator
         time(istep)=(istep-1)*dt
         psi=matmul(propagator,psi)
         do i=1,Nstate
-            rho(i,istep)=sum(real(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2+imag(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2)*dx
+            rho(i,istep)=sum(real(psi((1+(i-1)*Ngrid):(Ngrid+(i-1)*Ngrid)))**2+imag(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2)*dx
         end do
     end do
         
