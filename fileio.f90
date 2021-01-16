@@ -23,6 +23,10 @@ subroutine read_input(idinp)
         read(idinp,*) eps_dualHO,delta_dualHO
         read(idinp,*) 
         read(idinp,*) q_dualHO
+    case("3morse")
+        Nstate=3
+        read(idinp,*) 
+        read(idinp,*) type_morse
     end select
     read(idinp,*) 
     read(idinp,*) mass

@@ -1,0 +1,23 @@
+potential:
+3morse
+parameter:
+type:
+1
+mass:
+20000
+iop:
+1
+jop:(1 for eigen-solver, 2 for propagator) 
+2
+dt:
+10
+ttot:
+2000
+P0:
+0
+grid_start:
+0
+grid_end:
+20
+dx:
+0.01

@@ -34,6 +34,8 @@ subroutine build_pot
         call build_QP
     case("dualHO")
         call build_dualHO
+    case("3morse")
+        call build_3morse
     end select
 
 end subroutine
@@ -63,6 +65,7 @@ subroutine initial_wf
     use def
     use constant
     implicit real*8(a-h,o-z)
+    real*8 re_3morse
 
     select case(trim(adjustl(potential)))
     case("dualHO")
@@ -70,6 +73,19 @@ subroutine initial_wf
         do i=1,Ngrid
             psi(i)=(omega1_dualHO/pi)**0.25*exp(-omega1_dualHO*(R(i)+q_dualHO)**2/2)*exp(im*P0*(R(i)+q_dualHO))
         end do
+    case("3morse")
+        if(type_morse==1)then
+            re_3morse=2.9
+        else if(type_morse==2)then
+            re_3morse=3.3
+        else if(type_morse==3)then
+            re_3morse=2.1
+        end if  
+        psi=0
+        do i=1,Ngrid
+            psi(i)=(mass*5E-3/pi)**0.25*exp(-mass*5E-3*(R(i)-re_3morse)**2/2)*exp(im*P0*R(i))
+        end do
+    
     end select
 
 

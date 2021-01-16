@@ -42,6 +42,8 @@ module def
     ! parameters for 2-state dual harmonic oscillators
     real*8 omega1_dualHO,omega2_dualHO,eps_dualHO,delta_dualHO, q_dualHO
 
+    ! parameters for 3-state morse potential
+    integer type_morse
 
 
 contains
