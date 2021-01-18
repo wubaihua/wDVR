@@ -1,11 +1,13 @@
 subroutine read_input(idinp)
     use def
+    use constant
     implicit real*8(a-h,o-z)
     integer idinp
 
     read(idinp,*) 
     read(idinp,*) potential
     read(idinp,*) 
+    unittrans=1
     select case(trim(adjustl(potential)))
     case("HO")
         Nstate=1
@@ -27,6 +29,7 @@ subroutine read_input(idinp)
         Nstate=3
         read(idinp,*) 
         read(idinp,*) type_morse
+        unittrans=au_2_fs
     end select
     read(idinp,*) 
     read(idinp,*) mass
@@ -81,7 +84,7 @@ subroutine output
         open(20,file=filepath(1:len(trim(filepath))-4)//"_population.out")
 
         do i=1,nstep
-            write(20,101) time(i),rho(:,i)
+            write(20,101) time(i)*unittrans,rho(:,i)
         end do
     end select
 

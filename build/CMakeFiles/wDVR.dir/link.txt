@@ -1,0 +1,1 @@
+ifort   -mkl CMakeFiles/wDVR.dir/src/constant.f90.o CMakeFiles/wDVR.dir/src/def.f90.o CMakeFiles/wDVR.dir/src/fileio.f90.o CMakeFiles/wDVR.dir/src/finiteDVR.f90.o CMakeFiles/wDVR.dir/src/math.f90.o CMakeFiles/wDVR.dir/src/potential.f90.o CMakeFiles/wDVR.dir/src/wDVR.f90.o  -o wDVR 

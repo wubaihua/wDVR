@@ -32,6 +32,7 @@ module def
 
     real*8 mass
 
+    real*8 unittrans
 
     ! parameters for harmonic oscillator
     real*8 omega_HO,R0_HO
