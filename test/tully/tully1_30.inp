@@ -1,0 +1,23 @@
+potential:
+tully
+parameter:
+type:
+1
+mass:
+2000
+iop:
+1
+jop:(1 for eigen-solver, 2 for propagator) 
+2
+dt:
+1000
+ttot:
+4000
+P0:
+30
+grid_start:
+-50
+grid_end:
+50
+dx:
+0.02

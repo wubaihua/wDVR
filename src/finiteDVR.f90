@@ -36,6 +36,8 @@ subroutine build_pot
         call build_dualHO
     case("3morse")
         call build_3morse
+    case("tully")
+        call build_tully
     end select
 
 end subroutine
@@ -85,7 +87,12 @@ subroutine initial_wf
         do i=1,Ngrid
             psi(i)=(mass*5E-3/pi)**0.25*exp(-mass*5E-3*(R(i)-re_3morse)**2/2)*exp(im*P0*R(i))
         end do
-    
+    case("tully")
+        gamma_tully=1
+        psi=0
+        do i=1,Ngrid
+            psi(i)=(gamma_tully/pi)**0.25*exp(-gamma_tully/2*(R(i)-R0_tully)**2)*exp(im*P0*(R(i)-R0_tully))
+        end do
     end select
 
 
@@ -124,10 +131,27 @@ subroutine DVRpropagator
     nstep=ttot/dt 
     allocate(rho(Nstate,nstep))
     allocate(time(nstep))
-
+    if(trim(adjustl(potential))=="tully")then
+        allocate(pop_f(Nstate,nstep))
+        allocate(pop_b(Nstate,nstep))
+        ! do i=1,Ngrid
+        !     if(R(i)<0 .and. R(i+1)>0)then
+        !         i_zero=i 
+        !         exit
+        !     end if
+        ! end do
+    end if
     do i=1,Nstate
         rho(i,1)=sum(real(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2+imag(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2)*dx
     end do
+    if(trim(adjustl(potential))=="tully")then
+        ! pop_b(1,1)=sum(real(psi(1:i_zero))**2+imag(psi(1:i_zero))**2)*dx
+        ! pop_b(2,1)=sum(real(psi(1+Ngrid:i_zero+Ngrid))**2+imag(psi(1:i_zero))**2)*dx
+        ! pop_f(1,1)=sum(real(psi(i_zero+1:Ngrid))**2+imag(psi(i_zero+1:Ngrid))**2)*dx
+        ! pop_f(2,1)=sum(real(psi(i_zero+1+Ngrid:2*Ngrid))**2+imag(psi(i_zero+1+Ngrid:2*Ngrid))**2)*dx
+        call cal_fb_pop(dx,Ngrid,R,psi(1:Ngrid),pop_f(1,1),pop_b(1,1))
+        call cal_fb_pop(dx,Ngrid,R,psi(1+Ngrid:2*Ngrid),pop_f(2,1),pop_b(2,1))
+    end if
     time(1)=0
 
     do istep=2,Nstep
@@ -136,12 +160,65 @@ subroutine DVRpropagator
         do i=1,Nstate
             rho(i,istep)=sum(real(psi((1+(i-1)*Ngrid):(Ngrid+(i-1)*Ngrid)))**2+imag(psi(1+(i-1)*Ngrid:Ngrid+(i-1)*Ngrid))**2)*dx
         end do
+        if(trim(adjustl(potential))=="tully")then
+            ! pop_b(1,istep)=sum(real(psi(1:i_zero))**2+imag(psi(1:i_zero))**2)*dx
+            ! pop_b(2,istep)=sum(real(psi(1+Ngrid:i_zero+Ngrid))**2+imag(psi(1:i_zero))**2)*dx
+            ! pop_f(1,istep)=sum(real(psi(i_zero+1:Ngrid))**2+imag(psi(i_zero+1:Ngrid))**2)*dx
+            ! pop_f(2,istep)=sum(real(psi(i_zero+1+Ngrid:2*Ngrid))**2+imag(psi(i_zero+1+Ngrid:2*Ngrid))**2)*dx
+            call cal_fb_pop(dx,Ngrid,R,psi(1:Ngrid),pop_f(1,istep),pop_b(1,istep))
+            call cal_fb_pop(dx,Ngrid,R,psi(1+Ngrid:2*Ngrid),pop_f(2,istep),pop_b(2,istep))
+        end if
     end do
         
-
+    
 
 
 
     
+
+end subroutine
+
+
+
+subroutine cal_fb_pop(dx,Ngrid,R,psi,pop_f,pop_b)
+    use constant
+    implicit real*8(a-h,o-z)
+    integer Ngrid
+    real*8 R(Ngrid),pop_f,pop_b,dx,dp,P_start,P_end
+    complex*16 psi(Ngrid)
+    real*8,allocatable :: P(:)
+    complex*16,allocatable :: psi_p(:)
+
+    dp=dx
+    P_start=R(1)
+    P_end=R(Ngrid)
+    ngrid_p=(P_end-P_start)/dp
+    allocate(P(ngrid_p))
+    allocate(psi_p(ngrid_p))
+
+    do i=1,ngrid_p
+        P(i)=P_start+i*dp
+        psi_p(i)=sum(psi(:)*exp(-im*P(i)*R(:)))*dx/sqrt(2*pi)
+    end do
+
+    ! open(34,file="psi_p.dat")
+    ! do i=1,ngrid_p
+    !     write(34,*) p(i),real(psi_p(i))**2+imag(psi_p(i))**2
+    ! end do
+    ! stop
+
+    do i=1,Ngrid
+        if(P(i)<0 .and. P(i+1)>0)then
+            i_zero=i 
+            exit
+        end if
+    end do
+
+    pop_b=sum(real(psi_p(1:i_zero))**2+imag(psi_p(1:i_zero))**2)*dp
+    pop_f=sum(real(psi_p(1+i_zero:Ngrid_p))**2+imag(psi_p(1+i_zero:Ngrid_p))**2)*dp
+
+    deallocate(P)
+    deallocate(psi_p)
+
 
 end subroutine

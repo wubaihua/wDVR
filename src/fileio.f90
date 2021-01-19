@@ -29,8 +29,13 @@ subroutine read_input(idinp)
         Nstate=3
         read(idinp,*) 
         read(idinp,*) type_morse
-        unittrans=au_2_fs
+        unittrans=au_2_fs 
+    case("tully")
+        Nstate=2
+        read(idinp,*) 
+        read(idinp,*) type_tully
     end select
+   
     read(idinp,*) 
     read(idinp,*) mass
     read(idinp,*) 
@@ -86,6 +91,13 @@ subroutine output
         do i=1,nstep
             write(20,101) time(i)*unittrans,rho(:,i)
         end do
+        if(trim(adjustl(potential))=="tully")then
+            open(21,file=filepath(1:len(trim(filepath))-4)//"_fbpop.out") 
+            write(21,*) "t  T1  R1  T2  R2"  
+            do i=1,nstep
+                write(21,"(5E18.8)") time(i)*unittrans,pop_f(1,i),pop_b(1,i),pop_f(2,i),pop_b(2,i)
+            end do
+        end if
     end select
 
 

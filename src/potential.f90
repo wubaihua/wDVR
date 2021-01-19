@@ -134,3 +134,81 @@ subroutine build_3morse
 
 
 end subroutine
+
+
+
+
+subroutine build_tully
+    use def
+    implicit real*8(a-h,o-z)
+    real*8 A_tully,B_tully,C_tully,D_tully,E_tully
+
+
+
+    select case(type_tully)
+    case(1)
+        A_tully=0.01
+        B_tully=1.6
+        C_tully=0.005
+        D_tully=1
+        mass=2000
+        R0_tully=-3.8
+    case(2)
+        A_tully=0.1
+        B_tully=0.28
+        C_tully=0.015
+        D_tully=0.06
+        E_tully=0.05
+        mass=2000
+        R0_tully=-10
+        
+    case(3)
+        A_tully=6E-4
+        B_tully=0.1
+        C_tully=0.9
+        mass=2000
+        R0_tully=-13
+       
+    end select
+
+
+
+    V=0
+
+
+    select case(type_tully)
+    case(1)  
+        do i=1,Ngrid
+            if(R(i)>0)then
+                V(i,i)=A_tully*(1-exp(-B_tully*R(i)))
+            else
+                V(i,i)=-A_tully*(1-exp(B_tully*R(i)))
+            end if  
+            V(i+Ngrid,i+Ngrid)=-V(i,i)
+            V(i,i+Ngrid)=C_tully*exp(-D_tully*R(i)**2)
+            V(i+Ngrid,i)=V(i,i+Ngrid)
+        end do            
+    case(2)
+        do i=1,Ngrid
+            V(i,i)=0
+            V(i+Ngrid,i+Ngrid)=-A_tully*exp(-B_tully*R(i)**2)+E_tully
+            V(i,i+Ngrid)=C_tully*exp(-D_tully*R(i)**2)
+            V(i+Ngrid,i)=V(i,i+Ngrid)
+        end do   
+    case(3)
+        do i=1,Ngrid 
+            V(i,i)=-A_tully
+            V(i+Ngrid,i+Ngrid)=A_tully
+            if(R(i)>0)then
+                V(i,i+Ngrid)=B_tully*(1-(exp(-C_tully*R(i))-1))
+            else
+                V(i,i+Ngrid)=B_tully*(1+(exp(C_tully*R(i))-1))
+            end if  
+            V(i+Ngrid,i)=V(i,i+Ngrid)
+        end do  
+
+    end select
+    
+
+
+end subroutine

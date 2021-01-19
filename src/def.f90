@@ -46,6 +46,11 @@ module def
     ! parameters for 3-state morse potential
     integer type_morse
 
+    ! parameters for 2-state tully model
+    integer type_tully
+    real*8 R0_tully,gamma_tully
+    real*8,allocatable :: pop_f(:,:),pop_b(:,:)
+
 
 contains
 
