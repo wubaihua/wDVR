@@ -50,6 +50,7 @@ subroutine eigensolver
     use math
     implicit real*8(a-h,o-z)
     real*8,allocatable :: c(:,:)
+    REAL*8 V_inte(Ngrid*Nstate)
 
     ! allocate(c(Ngrid*Nstate,Ngrid*Nstate))
 
@@ -57,6 +58,22 @@ subroutine eigensolver
     call build_pot
 
     call dia_symmat(Ngrid*Nstate,T+V,E,eigenwf)
+
+    do i=1,Ngrid*Nstate
+        V_inte(i)=V(i,i)
+    end do
+
+    Vpot=0
+    kinetic=0
+
+    
+
+    do i=1,Ngrid*Nstate
+        Vpot=Vpot+exp(-beta*E(i))*sum(eigenwf(:,i)**2*V_inte(:))*dx
+        kinetic=kinetic+exp(-beta*E(i))*sum(eigenwf(:,i)*matmul(T,eigenwf(:,i)))*dx
+    end do
+
+    
 
 
 end subroutine
@@ -207,7 +224,7 @@ subroutine cal_fb_pop(dx,Ngrid,R,psi,pop_f,pop_b)
     ! end do
     ! stop
 
-    do i=1,Ngrid
+    do i=1,Ngrid_p
         if(P(i)<0 .and. P(i+1)>0)then
             i_zero=i 
             exit

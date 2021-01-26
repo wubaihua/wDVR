@@ -13,6 +13,9 @@ module def
 
     integer Nstate
 
+    real*8 beta 
+    real*8 vpot,kinetic
+
     real*8,allocatable :: T(:,:),V(:,:) ! kinectic & potential matrix for DVR
     real*8,allocatable :: eigenwf(:,:) ! DVR eigen function
     complex*16,allocatable :: psi(:) ! DVR time-dependent wave function

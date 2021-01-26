@@ -35,7 +35,9 @@ subroutine read_input(idinp)
         read(idinp,*) 
         read(idinp,*) type_tully
     end select
-   
+    
+    read(idinp,*) 
+    read(idinp,*) beta
     read(idinp,*) 
     read(idinp,*) mass
     read(idinp,*) 
@@ -77,6 +79,7 @@ subroutine output
 
         open(15,file=filepath(1:len(trim(filepath))-4)//"_energy.out")
         open(16,file=filepath(1:len(trim(filepath))-4)//"_wavefun.out")
+        open(17,file=filepath(1:len(trim(filepath))-4)//"_physvalue.out")
 
         do i=1,Nstate*Ngrid
             write(15,*) E(i)
@@ -84,6 +87,9 @@ subroutine output
         do i=1,Ngrid
             write(16,100) R(i),eigenwf(i,:)
         end do
+
+        write(17,*) "Vpot",Vpot
+        write(17,*) "kinetic",kinetic
 
     case(2)
         open(20,file=filepath(1:len(trim(filepath))-4)//"_population.out")
