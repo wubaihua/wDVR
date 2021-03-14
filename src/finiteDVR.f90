@@ -51,6 +51,7 @@ subroutine eigensolver
     implicit real*8(a-h,o-z)
     real*8,allocatable :: c(:,:)
     REAL*8 V_inte(Ngrid*Nstate)
+    real*8 parti_fun
 
     ! allocate(c(Ngrid*Nstate,Ngrid*Nstate))
 
@@ -66,13 +67,21 @@ subroutine eigensolver
     Vpot=0
     kinetic=0
 
-    
+    parti_fun=0
+
+    ! write(*,*) sum(eigenwf(:,1)**2)*dx
+    ! print*, beta
 
     do i=1,Ngrid*Nstate
+        parti_fun=parti_fun+exp(-beta*E(i))
+        eigenwf(:,i)=eigenwf(:,i)/(sqrt(sum(eigenwf(:,i)**2)*dx))
+        ! write(*,*) sum(eigenwf(:,i)**2)*dx
         Vpot=Vpot+exp(-beta*E(i))*sum(eigenwf(:,i)**2*V_inte(:))*dx
         kinetic=kinetic+exp(-beta*E(i))*sum(eigenwf(:,i)*matmul(T,eigenwf(:,i)))*dx
     end do
 
+    Vpot=Vpot/parti_fun
+    kinetic=kinetic/parti_fun
     
 
 

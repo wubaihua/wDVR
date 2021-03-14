@@ -1,0 +1,17 @@
+potential:
+QP
+parameter:
+beta:
+1
+mass:
+1
+iop:
+1
+jop:(1 for eigen-solver, 2 for propagator) 
+1
+grid_start:
+-5
+grid_end:
+5
+dx:
+0.01

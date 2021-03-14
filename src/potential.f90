@@ -65,7 +65,7 @@ subroutine build_3morse
 
     select case(type_morse)
     case(1)
-        D_morse=(/0.003_8, 0.004_8, 0.005_8 /)
+        D_morse=(/0.003_8, 0.004_8, 0.003_8 /)
         beta_morse=(/0.65_8, 0.6_8, 0.65_8 /)
         R0_morse=(/5.0_8, 4.0_8, 6.0_8 /)
         C_morse=(/0.0_8, 0.01_8, 0.006_8 /)
