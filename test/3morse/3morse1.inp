@@ -1,6 +1,8 @@
 potential:
 3morse
 parameter:
+beta:
+1000
 type:
 1
 mass:
@@ -20,4 +22,4 @@ grid_start:
 grid_end:
 20
 dx:
-0.01
+0.1

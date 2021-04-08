@@ -212,3 +212,33 @@ subroutine build_tully
 
 
 end subroutine
+
+
+subroutine build_SC
+    use def
+    implicit real*8(a-h,o-z)
+    
+    a=0.4
+    b=1.0
+    c=-0.004
+    w=0.2
+    D=0.003
+    Dc=0.05
+    Ra=4.0
+    Rc=1.5
+    
+
+    
+
+    do i=1,Ngrid
+        
+        V(i,i)=0.5*w**2*R(i)**2
+          
+        V(i+Ngrid,i+Ngrid)=D*(exp(-a*(R(i)-Ra))-1.0)**2+c
+        V(i,i+Ngrid)=Dc*(tanh(b*(Rc-R(i)))+1.0)
+        V(i+Ngrid,i)=V(i,i+Ngrid)
+    end do    
+    
+
+
+end subroutine

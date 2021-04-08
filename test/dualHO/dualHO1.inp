@@ -7,6 +7,8 @@ eps,delta:
 1 1
 q:
 0.01
+beta
+1
 mass:
 1
 iop:
