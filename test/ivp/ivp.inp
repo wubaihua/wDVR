@@ -1,5 +1,5 @@
 potential:
-SC
+ivp
 parameter:
 beta:
 1000
@@ -12,12 +12,12 @@ jop:(1 for eigen-solver, 2 for propagator)
 dt:
 1
 ttot:
-20
+200
 P0:
-15
+0
 grid_start:
 -5
 grid_end:
 20
 dx:
-0.1
+0.01

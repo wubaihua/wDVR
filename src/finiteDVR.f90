@@ -38,8 +38,8 @@ subroutine build_pot
         call build_3morse
     case("tully")
         call build_tully
-    case("SC")
-        call build_SC
+    case("ivp")
+        call build_ivp
     end select
 
 end subroutine
@@ -62,6 +62,13 @@ subroutine eigensolver
 
     call dia_symmat(Ngrid*Nstate,T+V,E,eigenwf)
 
+    ! allocate(c(Ngrid*Nstate,Ngrid*Nstate))
+    ! c=matmul(eigenwf,transpose(eigenwf))
+    ! do i=1,Ngrid*Nstate
+    !     print*, c(i,i)
+    ! end do
+    ! print*, sum(c)
+    
     do i=1,Ngrid*Nstate
         V_inte(i)=V(i,i)
     end do
@@ -121,14 +128,12 @@ subroutine initial_wf
         do i=1,Ngrid
             psi(i)=(gamma_tully/pi)**0.25*exp(-gamma_tully/2*(R(i)-R0_tully)**2)*exp(im*P0*(R(i)-R0_tully))
         end do
-    case("SC")
-        r0=0.0
-       
-        w=0.2
-        gm=mass*w**2
+    case("ivp")
+        x0_ivp=0
+        omega_ivp=0.2
         psi=0
         do i=1,Ngrid
-            psi(i)=(gm/pi)**0.25*exp(-gm/2*(R(i)-r0)**2)*exp(im*P0*(R(i)-R0))
+            psi(i)=(mass*omega_ivp/pi)**0.25*exp(-mass*omega_ivp/2*(R(i)-x0_ivp)**2)*exp(im*P0*(R(i)-x0_ivp))
         end do
     end select
 

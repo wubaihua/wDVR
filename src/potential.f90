@@ -214,28 +214,27 @@ subroutine build_tully
 end subroutine
 
 
-subroutine build_SC
+subroutine build_ivp
     use def
     implicit real*8(a-h,o-z)
     
-    a=0.4
-    b=1.0
-    c=-0.004
-    w=0.2
-    D=0.003
-    Dc=0.05
-    Ra=4.0
-    Rc=1.5
-    
+    omega_ivp=0.004472
+    x0_ivp=0
+    v01_ivp=0
+    de_ivp=0.003
+    a_ivp=0.8
+    re_ivp=4
+    d0_ivp=0
 
+    delta_ivp=1.0
     
 
     do i=1,Ngrid
         
-        V(i,i)=0.5*w**2*R(i)**2
+        V(i,i)=0.5*mass*omega_ivp**2*(R(i)-x0_ivp)**2+v01_ivp
           
-        V(i+Ngrid,i+Ngrid)=D*(exp(-a*(R(i)-Ra))-1.0)**2+c
-        V(i,i+Ngrid)=Dc*(tanh(b*(Rc-R(i)))+1.0)
+        V(i+Ngrid,i+Ngrid)=de_ivp*(1-exp(-a_ivp*(R(i)-re_ivp)))**2+d0_ivp
+        V(i,i+Ngrid)=delta_ivp
         V(i+Ngrid,i)=V(i,i+Ngrid)
     end do    
     

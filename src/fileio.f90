@@ -34,7 +34,7 @@ subroutine read_input(idinp)
         Nstate=2
         read(idinp,*) 
         read(idinp,*) type_tully
-    case("SC")
+    case("ivp")
         Nstate=2
     end select
     
