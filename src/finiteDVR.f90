@@ -130,7 +130,7 @@ subroutine initial_wf
         end do
     case("ivp")
         x0_ivp=0
-        omega_ivp=0.2
+        omega_ivp=0.02
         psi=0
         do i=1,Ngrid
             psi(i)=(mass*omega_ivp/pi)**0.25*exp(-mass*omega_ivp/2*(R(i)-x0_ivp)**2)*exp(im*P0*(R(i)-x0_ivp))

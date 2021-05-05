@@ -218,15 +218,23 @@ subroutine build_ivp
     use def
     implicit real*8(a-h,o-z)
     
-    omega_ivp=0.004472
+    
+
+    omega_ivp=0.02
+    ! omega_ivp=0.004472
     x0_ivp=0
-    v01_ivp=0
-    de_ivp=0.003
-    a_ivp=0.8
-    re_ivp=4
+    v01_ivp=0.4
+    de_ivp=0.1
+    a_ivp=0.65
+    re_ivp=2.5
     d0_ivp=0
 
-    delta_ivp=1.0
+    delta_ivp=0.2
+
+    k_ivp=1
+    R0_ivp=0.5
+    sg_ivp=0.4
+    
     
 
     do i=1,Ngrid
@@ -234,7 +242,7 @@ subroutine build_ivp
         V(i,i)=0.5*mass*omega_ivp**2*(R(i)-x0_ivp)**2+v01_ivp
           
         V(i+Ngrid,i+Ngrid)=de_ivp*(1-exp(-a_ivp*(R(i)-re_ivp)))**2+d0_ivp
-        V(i,i+Ngrid)=delta_ivp
+        V(i,i+Ngrid)=k_ivp*exp(-((R(i)-R0_ivp)**2)/sg_ivp)
         V(i+Ngrid,i)=V(i,i+Ngrid)
     end do    
     
