@@ -32,6 +32,18 @@ end subroutine
 
 
 
+subroutine build_AHO
+    use def
+    implicit real*8(a-h,o-z)
+
+
+    V=0
+    do i=1,Ngrid
+        V(i,i)=R(i)**2-0.1*R(i)**3+0.1*R(i)**4
+    end do
+
+
+end subroutine
 
 
 
@@ -225,15 +237,15 @@ subroutine build_ivp
     x0_ivp=0
     v01_ivp=0.4
     de_ivp=0.1
-    a_ivp=0.65
+    a_ivp=0.6
     re_ivp=2.5
     d0_ivp=0
 
     delta_ivp=0.2
 
-    k_ivp=1
+    k_ivp=0.4
     R0_ivp=0.5
-    sg_ivp=0.4
+    sg_ivp=0.05
     
     
 

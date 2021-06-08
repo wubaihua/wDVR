@@ -32,6 +32,8 @@ subroutine build_pot
         call build_HO
     case("QP")
         call build_QP
+    case("AHO")
+        call build_AHO
     case("dualHO")
         call build_dualHO
     case("3morse")
@@ -53,7 +55,7 @@ subroutine eigensolver
     implicit real*8(a-h,o-z)
     real*8,allocatable :: c(:,:)
     REAL*8 V_inte(Ngrid*Nstate)
-    real*8 parti_fun
+    ! real*8 parti_fun
 
     ! allocate(c(Ngrid*Nstate,Ngrid*Nstate))
 
@@ -222,6 +224,7 @@ end subroutine
 
 
 
+
 subroutine cal_fb_pop(dx,Ngrid,R,psi,pop_f,pop_b)
     use constant
     implicit real*8(a-h,o-z)
@@ -263,4 +266,48 @@ subroutine cal_fb_pop(dx,Ngrid,R,psi,pop_f,pop_b)
     deallocate(psi_p)
 
 
+end subroutine
+
+
+
+
+
+subroutine DVRcorrefun
+    use def
+    use math
+    use constant
+    implicit real*8(a-h,o-z)
+    real*8,allocatable :: x2_grid(:),p_grid(:,:)
+
+    allocate(x2_grid(Ngrid))
+    allocate(p_grid(Ngrid,Ngrid))
+
+    x2_grid=R**2
+    
+    call eigensolver
+    nstep=ttot/dt 
+    allocate(corre_fun(nstep,20))
+    allocate(time(nstep))
+    corre_fun=(0.0_8,0.0_8)
+    time(1)=0
+    do n=1,Ngrid
+        do m=1,Ngrid
+            corre_fun(1,2)=corre_fun(1,2)+exp(-beta*E(n))*(sum(eigenwf(:,n)*eigenwf(:,m)*x2_grid)*dx)**2/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+        end do
+    end do
+    corre_fun=corre_fun/parti_fun 
+
+    do istep=2,Nstep
+        time(istep)=(istep-1)*dt
+        ! psi=matmul(propagator,psi)
+        do n=1,Ngrid
+            do m=1,Ngrid
+                corre_fun(istep,2)=corre_fun(istep,2)+exp(-beta*E(n)+im*(E(n)-E(m))*time(istep))*(sum(eigenwf(:,n)*eigenwf(:,m)*x2_grid)*dx)**2/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+            end do
+        end do 
+        corre_fun=corre_fun/parti_fun
+    end do
+        
+    
+   
 end subroutine

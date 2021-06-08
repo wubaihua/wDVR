@@ -1,0 +1,27 @@
+potential:
+HO
+parameter:
+omega:
+1
+R0:
+0
+beta:
+8
+mass:
+1
+iop:
+1
+jop:(1 for eigen-solver, 2 for propagator) 
+2
+dt:
+1
+ttot:
+10
+p0:
+0
+grid_start:
+-5
+grid_end:
+5
+dx:
+0.01

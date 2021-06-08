@@ -18,7 +18,11 @@ program wDVR
     case(1)
         call eigensolver
     case(2)
-        call DVRpropagator
+        if(Nstate>1)then
+            call DVRpropagator
+        else
+            call DVRcorrefun
+        end if
     end select
 
     call output

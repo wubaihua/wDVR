@@ -15,7 +15,7 @@ subroutine read_input(idinp)
         read(idinp,*) omega_HO
         read(idinp,*) 
         read(idinp,*) R0_HO
-    case("QP")
+    case("QP","AHO")
         Nstate=1
     case("dualHO")
         Nstate=2
@@ -94,16 +94,24 @@ subroutine output
         write(17,*) "kinetic",kinetic
 
     case(2)
-        open(20,file=filepath(1:len(trim(filepath))-4)//"_population.out")
 
-        do i=1,nstep
-            write(20,101) time(i)*unittrans,rho(:,i)
-        end do
-        if(trim(adjustl(potential))=="tully")then
-            open(21,file=filepath(1:len(trim(filepath))-4)//"_fbpop.out") 
-            write(21,*) "t  T1  R1  T2  R2"  
+        if(Nstate>1)then
+            open(20,file=filepath(1:len(trim(filepath))-4)//"_population.out")
+
             do i=1,nstep
-                write(21,"(5E18.8)") time(i)*unittrans,pop_f(1,i),pop_b(1,i),pop_f(2,i),pop_b(2,i)
+                write(20,101) time(i)*unittrans,rho(:,i)
+            end do
+            if(trim(adjustl(potential))=="tully")then
+                open(21,file=filepath(1:len(trim(filepath))-4)//"_fbpop.out") 
+                write(21,*) "t  T1  R1  T2  R2"  
+                do i=1,nstep
+                    write(21,"(5E18.8)") time(i)*unittrans,pop_f(1,i),pop_b(1,i),pop_f(2,i),pop_b(2,i)
+                end do
+            end if
+        else
+            open(22,file=filepath(1:len(trim(filepath))-4)//"_correfun.out")
+            do i=1,nstep
+                write(22,*) time(i)*unittrans,real(corre_fun(i,2))
             end do
         end if
     end select

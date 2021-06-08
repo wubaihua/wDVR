@@ -22,6 +22,9 @@ module def
     real*8,allocatable :: E(:)
 
     real*8,allocatable :: pot(:,:) ! multi-state potential matrix
+
+
+    real*8 parti_fun
    
 
     complex*16,allocatable :: propagator(:,:) ! DVR wave function
@@ -31,6 +34,9 @@ module def
     real*8,allocatable :: rho(:,:)
 
     real*8,allocatable :: time(:)
+
+    complex*16,allocatable :: corre_fun(:,:)
+
     integer nstep
 
     real*8 mass
