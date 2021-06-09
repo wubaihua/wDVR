@@ -276,6 +276,7 @@ subroutine DVRcorrefun
     use def
     use math
     use constant
+    use omp_lib
     implicit real*8(a-h,o-z)
     real*8,allocatable :: x2_grid(:)
     complex*16,allocatable :: p_grid(:,:)
@@ -296,6 +297,8 @@ subroutine DVRcorrefun
     allocate(time(nstep))
     corre_fun=(0.0_8,0.0_8)
     time(1)=0
+
+    !$OMP PARALLEL DO PRIVATE(n,m) SHARED(corre_fun,E,Ngrid,beta,eigenwf,p_grid,dx,x2_grid)
     do n=1,Ngrid
         do m=1,Ngrid
             if(n==m)then
@@ -307,10 +310,12 @@ subroutine DVRcorrefun
             ! write(*,*) 'test1'
         end do
     end do
+    !$OMP END PARALLEL DO
     
     ! corre_fun=corre_fun/parti_fun 
     ! write(*,*) corre_fun(1,2)
 
+    !$OMP PARALLEL DO PRIVATE(n,m,istep) SHARED(corre_fun,E,Ngrid,beta,eigenwf,p_grid,dx,x2_grid,time,dt)
     do istep=2,Nstep
         time(istep)=(istep-1)*dt
         ! psi=matmul(propagator,psi)
@@ -326,6 +331,7 @@ subroutine DVRcorrefun
         end do 
         
     end do
+    !$OMP END PARALLEL DO
         
     corre_fun=corre_fun/parti_fun
    
