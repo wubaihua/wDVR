@@ -277,13 +277,19 @@ subroutine DVRcorrefun
     use math
     use constant
     implicit real*8(a-h,o-z)
-    real*8,allocatable :: x2_grid(:),p_grid(:,:)
+    real*8,allocatable :: x2_grid(:)
+    complex*16,allocatable :: p_grid(:,:)
 
     allocate(x2_grid(Ngrid))
     allocate(p_grid(Ngrid,Ngrid))
 
     x2_grid=R**2
-    
+    do i=1,Ngrid 
+        p_grid(i,i)=-1.0
+        if(i<Ngrid)p_grid(i,i+1)=1.0
+    end do
+    p_grid=p_grid*(-im)/dx 
+
     call eigensolver
     nstep=ttot/dt 
     allocate(corre_fun(nstep,20))
@@ -292,22 +298,35 @@ subroutine DVRcorrefun
     time(1)=0
     do n=1,Ngrid
         do m=1,Ngrid
+            if(n==m)then
+                corre_fun(1,1)=corre_fun(1,1)+exp(-beta*E(n))*(sum(eigenwf(:,n)*matmul(p_grid,eigenwf(:,m)))*dx)*(sum(eigenwf(:,m)*matmul(p_grid,eigenwf(:,n)))*dx)/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+            else
+                corre_fun(1,1)=corre_fun(1,1)+(exp(-beta*E(m))-exp(-beta*E(n)))/(beta*(E(n)-E(m)))*(sum(eigenwf(:,n)*matmul(p_grid,eigenwf(:,m)))*dx)*(sum(eigenwf(:,m)*matmul(p_grid,eigenwf(:,n)))*dx)/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+            end if
             corre_fun(1,2)=corre_fun(1,2)+exp(-beta*E(n))*(sum(eigenwf(:,n)*eigenwf(:,m)*x2_grid)*dx)**2/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+            ! write(*,*) 'test1'
         end do
     end do
-    corre_fun=corre_fun/parti_fun 
+    
+    ! corre_fun=corre_fun/parti_fun 
+    ! write(*,*) corre_fun(1,2)
 
     do istep=2,Nstep
         time(istep)=(istep-1)*dt
         ! psi=matmul(propagator,psi)
         do n=1,Ngrid
             do m=1,Ngrid
-                corre_fun(istep,2)=corre_fun(istep,2)+exp(-beta*E(n)+im*(E(n)-E(m))*time(istep))*(sum(eigenwf(:,n)*eigenwf(:,m)*x2_grid)*dx)**2/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
+                if(n==m)then
+                    corre_fun(istep,1)=corre_fun(istep,1)+exp(-beta*E(n))*(sum(eigenwf(:,n)*matmul(p_grid,eigenwf(:,m)))*dx)*(sum(eigenwf(:,m)*matmul(p_grid,eigenwf(:,n)))*dx)/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)*exp(im*(E(m)-E(n))*time(istep))
+                else
+                    corre_fun(istep,1)=corre_fun(istep,1)+(exp(-beta*E(m))-exp(-beta*E(n)))/(beta*(E(n)-E(m)))*(sum(eigenwf(:,n)*matmul(p_grid,eigenwf(:,m)))*dx)*(sum(eigenwf(:,m)*matmul(p_grid,eigenwf(:,n)))*dx)/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)*exp(im*(E(m)-E(n))*time(istep))
+                end if
+                corre_fun(istep,2)=corre_fun(istep,2)+exp(-beta*E(n)+im*(E(m)-E(n))*time(istep))*(sum(eigenwf(:,n)*eigenwf(:,m)*x2_grid)*dx)**2/(sum(eigenwf(:,n)**2)*dx*sum(eigenwf(:,m)**2)*dx)
             end do
         end do 
-        corre_fun=corre_fun/parti_fun
+        
     end do
         
-    
+    corre_fun=corre_fun/parti_fun
    
 end subroutine

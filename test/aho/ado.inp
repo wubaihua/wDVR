@@ -1,10 +1,6 @@
 potential:
-HO
-parameter:
-omega:
-1
-R0:
-0
+AHO
+parameters:
 beta:
 8
 mass:

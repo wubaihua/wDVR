@@ -111,7 +111,7 @@ subroutine output
         else
             open(22,file=filepath(1:len(trim(filepath))-4)//"_correfun.out")
             do i=1,nstep
-                write(22,*) time(i)*unittrans,real(corre_fun(i,2))
+                write(22,"(3E18.8)") time(i)*unittrans,real(corre_fun(i,1:2))
             end do
         end if
     end select
