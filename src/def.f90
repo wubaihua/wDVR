@@ -60,6 +60,9 @@ module def
     real*8 R0_tully,gamma_tully
     real*8,allocatable :: pop_f(:,:),pop_b(:,:)
 
+    ! parameters for 15-state model
+    real*8 Re_15s,Dg_15s,alpha_15s,eta_15s,De_15s,Dc_15s,lambda_15s,R_cross_15s(15),sigma_15s
+
 
 contains
 

@@ -1,0 +1,23 @@
+potential:
+15s
+parameter:
+beta:
+10000
+mass:
+2000
+iop:
+1
+jop:(1 for eigen-solver, 2 for propagator) 
+2
+dt:
+1
+ttot:
+800
+P0:
+-30
+grid_start:
+0
+grid_end:
+20
+dx:
+0.02

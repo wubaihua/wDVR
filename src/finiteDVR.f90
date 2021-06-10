@@ -42,6 +42,8 @@ subroutine build_pot
         call build_tully
     case("ivp")
         call build_ivp
+    case("15s")
+        call build_15s
     end select
 
 end subroutine
@@ -136,6 +138,13 @@ subroutine initial_wf
         psi=0
         do i=1,Ngrid
             psi(i)=(mass*omega_ivp/pi)**0.25*exp(-mass*omega_ivp/2*(R(i)-x0_ivp)**2)*exp(im*P0*(R(i)-x0_ivp))
+        end do
+    case("15s")
+        
+
+        sigma_15s=sqrt(mass*2*Dg_15s*alpha_15s**2)
+        do i=1,Ngrid
+            psi(i)=(sigma_15s/pi)**0.25*exp(-sigma_15s/2*(R(i)-13)**2)*exp(im*P0*(R(i)-13))
         end do
     end select
 

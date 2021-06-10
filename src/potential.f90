@@ -261,3 +261,42 @@ subroutine build_ivp
 
 
 end subroutine
+
+
+
+
+subroutine build_15s
+    use def
+    implicit real*8(a-h,o-z)
+    ! real*8 Re_15s,Dg_15s,alpha_15s,eta_15s,De_15s,Dc_15s,lambda_15s,R_cross_15s(15)
+
+    Dg_15s=0.2
+    De_15s=0.05
+    Dc_15s=0.05
+    Re_15s=3
+    alpha_15s=0.4
+    lambda_15s=1
+    eta_15s=0.004
+
+    do n=2,15
+        R_cross_15s(n)=-log((2*Dg_15s*exp(alpha_15s*Re_15s)+1-sqrt((2*Dg_15s*exp(alpha_15s*Re_15s)+1)**2-4*Dg_15s*exp(2*alpha_15s*Re_15s)*(Dg_15s-De_15s-eta_15s*n)))/(2*Dg_15s*exp(2*alpha_15s*Re_15s)))/alpha_15s
+    end do
+
+    V=0
+
+    do i=1,Ngrid
+        V(i,i)=Dg_15s*(exp(-alpha_15s*(R(i)-Re_15s))-1)**2
+        do n=2,Nstate
+            V(i+(n-1)*Ngrid,i+(n-1)*Ngrid)=exp(-alpha_15s*R(i))+eta_15s*n+De_15s
+            V(i,i+(n-1)*Ngrid)=Dc_15s*exp(-lambda_15s*(R(i)-R_cross_15s(n))**2)
+            V(i+(n-1)*Ngrid,i)=V(i,i+(n-1)*Ngrid)
+        end do
+    end do
+
+
+    ! do i=1,Ngrid 
+    !     write(*,"(5E18.8)") R(i),V(i,i),V(i+Ngrid,i+Ngrid),V(i+2*Ngrid,i+2*Ngrid),V(i+3*Ngrid,i+3*Ngrid)
+    ! end do
+
+    ! STOP
+end subroutine

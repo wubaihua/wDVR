@@ -36,7 +36,10 @@ subroutine read_input(idinp)
         read(idinp,*) type_tully
     case("ivp")
         Nstate=2
+    case("15s")
+        Nstate=15
     end select
+    
     
     read(idinp,*) 
     read(idinp,*) beta
